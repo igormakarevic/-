@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VioletShop</title>
+<style>
+:root{
+  --primary:#7C3AED;--primary-dark:#5B21B6;--accent:#A78BFA;
+  --bg:#FAF5FF;--card:#fff;--ink:#1E1B4B;--muted:#6B7280;
+  --success:#10B981;--danger:#EF4444;--warning:#F59E0B;--radius:14px;
+  --shadow:0 10px 30px -10px rgba(124,58,237,.35);
+  --gradient:linear-gradient(135deg,#7C3AED 0%,#A78BFA 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--primary);text-decoration:none}
+a:hover{color:var(--primary-dark)}
+.container{max-width:1200px;margin:0 auto;padding:0 16px}
+.main{flex:1;padding:24px 16px 48px}
+.header{background:var(--card);box-shadow:0 2px 20px rgba(124,58,237,.08);position:sticky;top:0;z-index:100}
+.header-inner{display:flex;align-items:center;gap:16px;padding:14px 0;flex-wrap:wrap}
+.logo{font-size:22px;font-weight:800;color:var(--primary)}
+.search{flex:1;display:flex;min-width:200px;max-width:500px}
+.search input{flex:1;padding:10px 14px;border:2px solid var(--accent);border-right:none;border-radius:10px 0 0 10px;outline:none;font-size:14px}
+.search input:focus{border-color:var(--primary)}
+.search button{padding:10px 20px;border:none;background:var(--gradient);color:#fff;font-weight:600;cursor:pointer;border-radius:0 10px 10px 0}
+.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.nav-link{font-weight:600;color:var(--ink);font-size:14px}
+.nav-link:hover{color:var(--primary)}
+.cart-badge{background:var(--primary);color:#fff;border-radius:50%;font-size:11px;padding:2px 7px;margin-left:4px}
+.btn{display:inline-block;padding:10px 20px;border:none;cursor:pointer;background:var(--gradient);color:#fff;font-weight:600;border-radius:10px;font-size:14px;transition:transform .15s}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.btn-outline{background:transparent;color:var(--primary);border:2px solid var(--primary)}
+.btn-danger{background:var(--danger)}
+.btn-sm{padding:6px 12px;font-size:13px}
+.banner{background:var(--gradient);color:#fff;border-radius:20px;padding:48px 32px;text-align:center;margin-bottom:32px;box-shadow:var(--shadow)}
+.banner h1{font-size:36px;margin-bottom:12px}
+.banner p{font-size:16px;opacity:.95;margin-bottom:20px}
+.banner .btn{background:#fff;color:var(--primary)}
+.section-title{font-size:24px;margin:24px 0 16px}
+.category-chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.chip{padding:8px 18px;border-radius:99px;background:var(--card);border:2px solid var(--accent);cursor:pointer;font-weight:600;font-size:14px;color:var(--ink);transition:all .15s}
+.chip:hover,.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.card{background:var(--card);border-radius:var(--radius);overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.card img{width:100%;height:180px;object-fit:cover;background:#eee}
+.card-body{padding:14px;flex:1;display:flex;flex-direction:column;gap:6px}
+.card-title{font-size:15px;font-weight:600;line-height:1.3}
+.card-category{font-size:12px;color:var(--muted)}
+.card-price{font-size:18px;font-weight:800;color:var(--primary);margin-top:auto}
+.card-rating{font-size:13px;color:#F59E0B}
+.product-detail{display:grid;grid-template-columns:1fr 1fr;gap:40px;background:var(--card);border-radius:20px;padding:32px;box-shadow:var(--shadow)}
+.product-detail img{width:100%;border-radius:var(--radius);object-fit:cover;aspect-ratio:1;background:#eee}
+.product-info h1{font-size:28px;margin-bottom:12px}
+.product-info .price{font-size:32px;font-weight:800;color:var(--primary);margin:16px 0}
+.product-info p{color:var(--muted);line-height:1.6;margin-bottom:20px}
+@media(max-width:720px){.product-detail{grid-template-columns:1fr}}
+.form{max-width:420px;margin:32px auto;background:var(--card);padding:32px;border-radius:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:16px}
+.form h2{text-align:center;margin-bottom:8px}
+.form label{font-weight:600;font-size:14px}
+.form input,.form textarea,.form select{width:100%;padding:12px 14px;border:2px solid #e5e7eb;border-radius:10px;font-size:14px;outline:none;font-family:inherit}
+.form input:focus,.form textarea:focus{border-color:var(--primary)}
+.form .hint{font-size:12px;color:var(--muted);margin-top:-8px}
+.form .err{color:var(--danger);font-size:13px;margin-top:-8px;font-weight:600}
+.form .ok{color:var(--success);font-size:13px;margin-top:-8px;font-weight:600}
+.cart-item{display:flex;gap:16px;align-items:center;background:var(--card);padding:16px;border-radius:var(--radius);margin-bottom:12px}
+.cart-item img{width:80px;height:80px;object-fit:cover;border-radius:10px}
+.cart-item-info{flex:1}
+.cart-item-info h4{font-size:15px;margin-bottom:4px}
+.cart-item-info .price{color:var(--primary);font-weight:700}
+.qty{display:flex;gap:6px;align-items:center}
+.qty button{width:30px;height:30px;border-radius:8px;border:2px solid var(--accent);background:#fff;cursor:pointer;font-weight:700}
+.cart-summary{background:var(--card);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow);margin-top:20px}
+.cart-total{font-size:24px;font-weight:800;color:var(--primary)}
+.order-card{background:var(--card);padding:20px;border-radius:var(--radius);margin-bottom:16px;box-shadow:0 4px 12px rgba(124,58,237,.08)}
+.order-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.status{padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;color:#fff}
+.status.pending{background:#F59E0B}
+.status.processing{background:#3B82F6}
+.status.shipped{background:#8B5CF6}
+.status.delivered{background:var(--success)}
+.status.cancelled{background:var(--danger)}
+.admin-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;border-bottom:2px solid #e5e7eb;padding-bottom:12px}
+.admin-tabs a{padding:8px 16px;border-radius:10px;font-weight:600;color:var(--ink)}
+.admin-tabs a.active{background:var(--primary);color:#fff}
+.stats-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));margin-bottom:24px}
+.stat-card{background:var(--gradient);color:#fff;padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)}
+.stat-card .num{font-size:32px;font-weight:800}
+.stat-card .label{font-size:13px;opacity:.9}
+.table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden}
+.table th,.table td{padding:12px;text-align:left;border-bottom:1px solid #f3f4f6;font-size:14px}
+.table th{background:#F5F3FF;font-weight:700}
+.table tr:last-child td{border-bottom:none}
+.modal-backdrop{position:fixed;inset:0;background:rgba(30,27,75,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px}
+.modal{background:var(--card);padding:28px;border-radius:20px;max-width:440px;width:100%;box-shadow:var(--shadow);max-height:90vh;overflow-y:auto}
+.modal h3{margin-bottom:12px}
+.modal p{color:var(--muted);margin-bottom:16px;font-size:14px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:2000;align-items:center}
+.toast-item{background:var(--primary-dark);color:#fff;padding:12px 24px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:var(--shadow);animation:slideUp .3s ease;max-width:90vw}
+.toast-item.error{background:var(--danger)}
+.toast-item.success{background:var(--success)}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-icon{font-size:64px;margin-bottom:12px}
+.footer{background:var(--card);padding:32px 16px 16px;margin-top:40px;border-top:2px solid #F5F3FF}
+.footer-inner{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;margin-bottom:24px}
+.footer-inner strong{display:block;margin-bottom:6px;color:var(--primary)}
+.footer-inner p{color:var(--muted);font-size:14px}
+.copy{text-align:center;color:var(--muted);font-size:13px}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:640px){
+  .banner h1{font-size:24px}.banner{padding:32px 20px}
+  .search{order:3;width:100%;max-width:none}
+  .nav{font-size:13px;gap:10px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .card img{height:140px}.cart-item img{width:60px;height:60px}
+  .product-detail{padding:20px}
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="container header-inner">
+    <a href="#/" class="logo">🟣 VioletShop</a>
+    <form class="search" id="searchForm">
+      <input type="text" id="searchInput" placeholder="Поиск товаров..." />
+      <button type="submit">Найти</button>
+    </form>
+    <nav class="nav">
+      <a href="#/catalog" class="nav-link">Каталог</a>
+      <a href="#/cart" class="nav-link">🛒 Корзина <span class="cart-badge" id="cartBadge">0</span></a>
+      <a href="#/orders" class="nav-link auth-only" style="display:none">Заказы</a>
+      <a href="#/profile" class="nav-link auth-only" style="display:none">Профиль</a>
+      <a href="#/admin" class="nav-link admin-only" style="display:none">⚙️ Админ</a>
+      <a href="#/login" class="nav-link guest-only">Войти</a>
+      <a href="#" class="nav-link auth-only" style="display:none" id="logoutBtn">Выйти</a>
+    </nav>
+  </div>
+</header>
+<main id="app" class="container main"></main>
+<footer class="footer">
+  <div class="container footer-inner">
+    <div><strong>🟣 VioletShop</strong><p>Маркетплейс с фиолетовым характером.</p></div>
+    <div><strong>Контакты</strong><p>igormakarevich24@gmail.com</p></div>
+    <div><strong>Ссылки</strong><p><a href="#/catalog">Каталог</a> · <a href="#/cart">Корзина</a></p></div>
+  </div>
+  <p class="copy">© 2024 VioletShop</p>
+</footer>
+<div id="toast"></div>
+<script>
+  const SHOP_EMAIL = 'igormakarevich24@gmail.com';
+const SECRET_ADMIN_CODE = 'MY_SUPER_SECRET_2024';
+const ADMIN_ATTEMPTS_KEY = 'vs_admin_attempts';
+
+const DB={
+  get(k){try{return JSON.parse(localStorage.getItem(k))||[]}catch{return[]}},
+  set(k,v){localStorage.setItem(k,JSON.stringify(v))},
+  uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+};
+const K={USERS:'vs_users',PRODUCTS:'vs_products',ORDERS:'vs_orders',CART:'vs_cart',SESSION:'vs_session',SEEDED:'vs_products_seeded'};
+
+(function seed(){
+  if(localStorage.getItem(K.SEEDED))return;
+  const img=q=>`https://images.unsplash.com/${q}?auto=format&fit=crop&w=600&q=60`;
+  const items=[
+    ['Беспроводные наушники',49.99,'Электроника',4.6,'photo-1505740420928-5e560c06d30e'],
+    ['Смарт-часы',89.9,'Электроника',4.4,'photo-1523275335684-37898b6baf30'],
+    ['Портативная колонка',35.5,'Электроника',4.2,'photo-1608043152269-423dbba4e7e1'],
+    ['Механическая клавиатура',79,'Электроника',4.8,'photo-1587829741301-dc798b83add3'],
+    ['Худи оверсайз',32,'Одежда',4.5,'photo-1556821840-3a63f95609a7'],
+    ['Джинсы прямые',45,'Одежда',4.3,'photo-1542272604-787c3835535d'],
+    ['Кроссовки белые',65,'Одежда',4.7,'photo-1542291026-7eec264c27ff'],
+    ['Куртка демисезон',110,'Одежда',4.1,'photo-1551028719-00167b16eac5'],
+    ['Ароматическая свеча',12.5,'Дом',4.6,'photo-1602874801006-e26a7a4b0c2d'],
+    ['Плед мягкий',28,'Дом',4.4,'photo-1580301762395-83f7e2b1f0d0'],
+    ['Настольная лампа',22,'Дом',4.2,'photo-1507473885765-e6ed057f782c'],
+    ['Кружка керамическая',9.9,'Дом',4.3,'photo-1514228742587-6b1558fcca3d'],
+    ['Набор кистей для макияжа',19.9,'Красота',4.5,'photo-1522335789203-aabd1fc54bc9'],
+    ['Крем для лица',24,'Красота',4.6,'photo-1556228720-195a672e8a03'],
+    ['Парфюм цветочный',55,'Красота',4.4,'photo-1541643600914-78b084683601'],
+    ['Тушь для ресниц',15.5,'Красота',4.2,'photo-1631214524020-7e18db9a8f92'],
+    ['Плюшевый мишка',18,'Игрушки',4.8,'photo-1559454403-b8fb88521f11'],
+    ['Конструктор',42,'Игрушки',4.7,'photo-1587654780291-39c9404d746b'],
+    ['Настольная игра',27,'Игрушки',4.5,'photo-1611891487122-207579d67d98'],
+    ['Машинка радиоуправляемая',39,'Игрушки',4.3,'photo-1558060370-d644479cb6f7']
+  ];
+  DB.set(K.PRODUCTS,items.map(([title,price,category,rating,q])=>({
+    id:DB.uid(),title,price,category,rating,stock:20,
+    description:`${title} — качественный товар из категории "${category}".`,
+    imageUrl:img(q),createdAt:Date.now()
+  })));
+  localStorage.setItem(K.SEEDED,'1');
+})();
+
+function isValidEmailFormat(email){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)}
+async function domainExists(email){
+  const domain=email.split('@')[1];if(!domain)return false;
+  try{
+    const res=await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
+    const data=await res.json();
+    return Array.isArray(data.Answer)&&data.Answer.length>0;
+  }catch(e){return null}
+}
+async function validateEmail(email){
+  if(!isValidEmailFormat(email))return{ok:false,msg:'Неверный формат email'};
+  const exists=await domainExists(email);
+  if(exists===false)return{ok:false,msg:'Домен этой почты не существует'};
+  return{ok:true};
+}
+
+const Auth={
+  currentUser(){const s=localStorage.getItem(K.SESSION);if(!s)return null;return DB.get(K.USERS).find(u=>u.id===s)||null},
+  isAdmin(){return this.currentUser()?.role==='admin'},
+  async register(email,password,name){
+    const check=await validateEmail(email);
+    if(!check.ok)throw new Error(check.msg);
+    const users=DB.get(K.USERS);
+    if(users.some(u=>u.email===email))throw new Error('Этот email уже зарегистрирован');
+    const user={id:DB.uid(),email,password,name,role:'user',createdAt:Date.now()};
+    users.push(user);DB.set(K.USERS,users);localStorage.setItem(K.SESSION,user.id);return user;
+  },
+  login(email,password){
+    const user=DB.get(K.USERS).find(u=>u.email===email&&u.password===password);
+    if(!user)throw new Error('Неверный email или пароль');
+    localStorage.setItem(K.SESSION,user.id);return user;
+  },
+  logout(){localStorage.removeItem(K.SESSION)},
+  becomeAdmin(code){
+    const user=this.currentUser();
+    if(!user)throw new Error('Сначала войдите');
+    const attempts=JSON.parse(localStorage.getItem(ADMIN_ATTEMPTS_KEY)||'[]');
+    const now=Date.now();
+    const recent=attempts.filter(t=>now-t<15*60*1000);
+    if(recent.length>=5)throw new Error('Много попыток. Ждите 15 минут');
+    if(code!==SECRET_ADMIN_CODE){
+      recent.push(now);localStorage.setItem(ADMIN_ATTEMPTS_KEY,JSON.stringify(recent));
+      throw new Error('Неверный секретный код');
+    }
+    const users=DB.get(K.USERS);
+    const idx=users.findIndex(u=>u.id===user.id);
+    users[idx].role='admin';DB.set(K.USERS,users);localStorage.removeItem(ADMIN_ATTEMPTS_KEY);return true;
+  }
+};
+
+const Products={
+  all(){return DB.get(K.PRODUCTS)},
+  byId(id){return this.all().find(p=>p.id===id)},
+  categories(){return[...new Set(this.all().map(p=>p.category))]},
+  filter({category,search,minPrice,maxPrice,sort}){
+    let list=this.all();
+    if(category)list=list.filter(p=>p.category===category);
+    if(search){const q=search.toLowerCase();list=list.filter(p=>p.title.toLowerCase().includes(q))}
+    if(minPrice!=null)list=list.filter(p=>p.price>=minPrice);
+    if(maxPrice!=null)list=list.filter(p=>p.price<=maxPrice);
+    if(sort==='price_asc')list.sort((a,b)=>a.price-b.price);
+    else if(sort==='price_desc')list.sort((a,b)=>b.price-a.price);
+    else if(sort==='rating')list.sort((a,b)=>b.rating-a.rating);
+    else list.sort((a,b)=>b.createdAt-a.createdAt);
+    return list;
+  },
+  create(data){const products=this.all();const product={id:DB.uid(),createdAt:Date.now(),...data};products.push(product);DB.set(K.PRODUCTS,products);return product},
+  update(id,data){const products=this.all();const idx=products.findIndex(p=>p.id===id);if(idx<0)throw new Error('Товар не найден');products[idx]={...products[idx],...data};DB.set(K.PRODUCTS,products);return products[idx]},
+  remove(id){DB.set(K.PRODUCTS,this.all().filter(p=>p.id!==id))}
+};
+
+const Cart={
+  get(){return DB.get(K.CART)},
+  set(items){DB.set(K.CART,items);updateCartBadge()},
+  add(productId,quantity=1){const items=this.get();const ex=items.find(i=>i.productId===productId);if(ex)ex.quantity+=quantity;else items.push({productId,quantity});this.set(items)},
+  updateQty(productId,quantity){const items=this.get();const item=items.find(i=>i.productId===productId);if(!item)return;if(quantity<=0)return this.remove(productId);item.quantity=quantity;this.set(items)},
+  remove(productId){this.set(this.get().filter(i=>i.productId!==productId))},
+  clear(){this.set([])},
+  count(){return this.get().reduce((s,i)=>s+i.quantity,0)},
+  detailed(){return this.get().map(i=>{const p=Products.byId(i.productId);return p?{...i,product:p,subtotal:p.price*i.quantity}:null}).filter(Boolean)},
+  total(){return this.detailed().reduce((s,i)=>s+i.subtotal,0)}
+};
+function updateCartBadge(){const el=document.getElementById('cartBadge');if(el)el.textContent=Cart.count()}
+
+const Orders={
+  all(){return DB.get(K.ORDERS)},
+  my(){const user=Auth.currentUser();if(!user)return[];return this.all().filter(o=>o.userId===user.id).sort((a,b)=>b.createdAt-a.createdAt)},
+  create({address,phone,comment}){
+    const user=Auth.currentUser();if(!user)throw new Error('Войдите');
+    const cart=Cart.detailed();if(!cart.length)throw new Error('Корзина пуста');
+    const order={id:DB.uid(),userId:user.id,userEmail:user.email,userName:user.name,total:Cart.total(),status:'pending',address,phone,comment:comment||'',items:cart.map(i=>({productId:i.productId,title:i.product.title,quantity:i.quantity,price:i.product.price})),createdAt:Date.now()};
+    const all=this.all();all.push(order);DB.set(K.ORDERS,all);Cart.clear();return order;
+  },
+  setStatus(id,status){const all=this.all();const idx=all.findIndex(o=>o.id===id);if(idx<0)throw new Error('Заказ не найден');all[idx].status=status;DB.set(K.ORDERS,all)}
+};
+  function money(n){return n.toFixed(2)+' ₴'}
+function toast(msg,type='info'){
+  const box=document.getElementById('toast');
+  const el=document.createElement('div');
+  el.className=`toast-item ${type}`;el.textContent=msg;
+  box.appendChild(el);setTimeout(()=>el.remove(),3000);
+}
+function updateAuthUI(){
+  const user=Auth.currentUser();const isAdmin=user?.role==='admin';
+  document.querySelectorAll('.auth-only').forEach(e=>{e.style.display=user?'':'none'});
+  document.querySelectorAll('.guest-only').forEach(e=>{e.style.display=user?'none':''});
+  document.querySelectorAll('.admin-only').forEach(e=>{e.style.display=isAdmin?'':'none'});
+  updateCartBadge();
+}
+function statusLabel(s){return{pending:'Новый',processing:'В обработке',shipped:'Отправлен',delivered:'Доставлен',cancelled:'Отменён'}[s]||s}
+function adminTabs(active){
+  const tabs=[['dashboard','📊 Дашборд','#/admin'],['products','📦 Товары','#/admin/products'],['orders','📋 Заказы','#/admin/orders'],['users','👥 Пользователи','#/admin/users']];
+  return `<div class="admin-tabs">${tabs.map(([k,l,h])=>`<a href="${h}" class="${k===active?'active':''}">${l}</a>`).join('')}</div>`;
+}
+function notAllowed(){return `<div class="empty"><div class="empty-icon">🚫</div><p>Доступ только для админа</p><a href="#/" class="btn" style="margin-top:16px">На главную</a></div>`}
+function renderProductCard(p){
+  return `<a class="card" href="#/product/${p.id}">
+    <img src="${p.imageUrl}" alt="${p.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'"/>
+    <div class="card-body">
+      <div class="card-category">${p.category}</div>
+      <div class="card-title">${p.title}</div>
+      <div class="card-rating">⭐ ${p.rating.toFixed(1)}</div>
+      <div class="card-price">${money(p.price)}</div>
+    </div></a>`;
+}
+
+const Pages={
+  home(){
+    const popular=Products.all().sort((a,b)=>b.rating-a.rating).slice(0,8);
+    const cats=Products.categories();
+    return `<div class="banner"><h1>🟣 Добро пожаловать в VioletShop</h1><p>Тысячи товаров по лучшим ценам. Быстрая доставка.</p><a href="#/catalog" class="btn">В каталог →</a></div>
+    <h2 class="section-title">Категории</h2><div class="category-chips">${cats.map(c=>`<a class="chip" href="#/catalog?cat=${encodeURIComponent(c)}">${c}</a>`).join('')}</div>
+    <h2 class="section-title">Популярные товары</h2><div class="grid">${popular.map(renderProductCard).join('')}</div>`;
+  },
+  catalog(params){
+    const cat=params.get('cat')||'';const search=params.get('q')||'';const sort=params.get('sort')||'';
+    const minPrice=params.get('min')?Number(params.get('min')):null;const maxPrice=params.get('max')?Number(params.get('max')):null;
+    const list=Products.filter({category:cat,search,sort,minPrice,maxPrice});const cats=Products.categories();
+    return `<h1 class="section-title">Каталог</h1>
+      <form class="form" style="max-width:none;margin:0 0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));" id="filterForm">
+        <div><label>Категория</label><select name="cat"><option value="">Все</option>${cats.map(c=>`<option ${c===cat?'selected':''} value="${c}">${c}</option>`).join('')}</select></div>
+        <div><label>Цена от</label><input type="number" name="min" min="0" value="${minPrice??''}" placeholder="0"/></div>
+        <div><label>Цена до</label><input type="number" name="max" min="0" value="${maxPrice??''}" placeholder="∞"/></div>
+        <div><label>Сортировка</label><select name="sort"><option value="">Новые</option><option ${sort==='price_asc'?'selected':''} value="price_asc">Дешевле</option><option ${sort==='price_desc'?'selected':''} value="price_desc">Дороже</option><option ${sort==='rating'?'selected':''} value="rating">По рейтингу</option></select></div>
+      </form>
+      <p style="margin-bottom:16px;color:#6B7280">Найдено: <strong>${list.length}</strong></p>
+      ${list.length?`<div class="grid">${list.map(renderProductCard).join('')}</div>`:`<div class="empty"><div class="empty-icon">🔍</div><p>Ничего не найдено</p></div>`}`;
+  },
+  product(id){
+    const p=Products.byId(id);if(!p)return `<div class="empty"><div class="empty-icon">❓</div><p>Товар не найден</p></div>`;
+    return `<div class="product-detail">
+      <img src="${p.imageUrl}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/600?text=No+Image'"/>
+      <div class="product-info"><div class="card-category">${p.category}</div><h1>${p.title}</h1>
+        <div class="card-rating">⭐ ${p.rating.toFixed(1)} · В наличии: ${p.stock}</div>
+        <div class="price">${money(p.price)}</div><p>${p.description}</p>
+        <button class="btn" id="addToCartBtn">🛒 В корзину</button>
+      </div></div>`;
+  },
+  cart(){
+  const items=Cart.detailed();
+  if(!items.length)return `<div class="empty"><div class="empty-icon">🛒</div><p>Корзина пуста</p><a href="#/catalog" class="btn" style="margin-top:16px">В каталог</a></div>`;
+  return `<h1 class="section-title">Корзина</h1>
+    ${items.map(i=>`<div class="cart-item"><img src="${i.product.imageUrl}" alt=""/>
+      <div class="cart-item-info"><h4>${i.product.title}</h4><div class="price">${money(i.product.price)}</div></div>
+      <div class="qty"><button data-cart-minus="${i.productId}">−</button><span>${i.quantity}</span><button data-cart-plus="${i.productId}">+</button></div>
+      <strong>${money(i.subtotal)}</strong><button class="btn btn-sm btn-danger" data-cart-remove="${i.productId}">✕</button>
+    </div>`).join('')}
+    <div class="cart-summary"><div style="display:flex;justify-content:space-between;align-items:center;"><span>Итого:</span><span class="cart-total">${money(Cart.total())}</span></div>
+      <a href="#/checkout" class="btn" style="width:100%;text-align:center;margin-top:16px;display:block;">Оформить заказ →</a>
+    </div>`;
+},
+checkout(){
+  if(!Auth.currentUser())return `<div class="empty"><div class="empty-icon">🔒</div><p>Войдите, чтобы оформить заказ</p><a href="#/login" class="btn" style="margin-top:16px">Войти</a></div>`;
+  if(!Cart.count())return `<div class="empty"><div class="empty-icon">🛒</div><p>Корзина пуста</p></div>`;
+  const user=Auth.currentUser();
+  return `<form class="form" id="checkoutForm" style="max-width:520px">
+    <h2>Оформление заказа</h2><label>Имя</label><input name="name" value="${user.name}" required/>
+    <label>Телефон</label><input name="phone" type="tel" placeholder="+380..." required/>
+    <label>Адрес доставки</label><textarea name="address" rows="2" required placeholder="Город, улица, дом, квартира"></textarea>
+    <label>Комментарий</label><textarea name="comment" rows="2"></textarea>
+    <div style="display:flex;justify-content:space-between;padding:12px 0;border-top:2px solid #F5F3FF;"><span>Итого:</span><strong style="color:#7C3AED;font-size:20px">${money(Cart.total())}</strong></div>
+    <button class="btn" type="submit" id="checkoutSubmitBtn">Подтвердить заказ</button><p class="hint">📧 Заказ будет отправлен на ${SHOP_EMAIL}</p>
+  </form>`;
+},
+login(){
+  return `<form class="form" id="loginForm"><h2>Вход</h2><label>Email</label><input name="email" type="email" required placeholder="your@email.com"/>
+    <label>Пароль</label><input name="password" type="password" required/><button class="btn" type="submit">Войти</button>
+    <p style="text-align:center;font-size:14px;color:#6B7280">Нет аккаунта? <a href="#/register">Зарегистрироваться</a></p></form>`;
+},
+register(){
+  return `<form class="form" id="registerForm"><h2>Регистрация</h2><label>Имя</label><input name="name" required placeholder="Ваше имя"/>
+    <label>Email</label><input name="email" type="email" required placeholder="your@email.com" id="regEmailInput"/><div id="emailCheckResult"></div>
+    <label>Пароль (мин 6)</label><input name="password" type="password" minlength="6" required/>
+    <button class="btn" type="submit" id="regSubmitBtn">Создать аккаунт</button><p class="hint">Проверяем формат и домен почты</p></form>`;
+},
+orders(){
+  if(!Auth.currentUser())return `<div class="empty">Войдите</div>`;const list=Orders.my();
+  if(!list.length)return `<div class="empty"><div class="empty-icon">📦</div><p>Заказов нет</p><a href="#/catalog" class="btn" style="margin-top:16px">В каталог</a></div>`;
+  return `<h1 class="section-title">Мои заказы</h1>${list.map(o=>`<div class="order-card">
+      <div class="order-header"><div><strong>Заказ #${o.id.slice(-6)}</strong></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div>
+      <div style="font-size:13px;color:#6B7280;margin-bottom:12px">${new Date(o.createdAt).toLocaleString('ru-RU')} · ${o.address}</div>
+      ${o.items.map(i=>`<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;border-bottom:1px solid #f3f4f6"><span>${i.title} × ${i.quantity}</span><strong>${money(i.price*i.quantity)}</strong></div>`).join('')}
+      <div style="text-align:right;margin-top:12px"><strong style="color:#7C3AED;font-size:18px">Итого: ${money(o.total)}</strong></div></div>`).join('')}`;
+},
+profile(){
+  const user=Auth.currentUser();if(!user)return `<div class="empty">Войдите</div>`;
+  return `<div class="form"><h2>Профиль</h2><p><strong>Имя:</strong> ${user.name}</p><p><strong>Email:</strong> ${user.email}</p>
+    <p><strong>Роль:</strong> ${user.role==='admin'?'👑 Админ':'👤 Пользователь'}</p>
+    ${user.role!=='admin'?`<button class="btn btn-outline" id="openAdminModal" style="margin-top:12px">🔑 Стать продавцом (ввести код)</button>`:`<a href="#/admin" class="btn" style="text-align:center;margin-top:12px">⚙️ В админ-панель</a>`}</div>`;
+}, 
+    adminDashboard(){
+    if(!Auth.isAdmin())return notAllowed();
+    const orders=Orders.all();const users=DB.get(K.USERS);const products=Products.all();
+    const revenue=orders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+o.total,0);
+    return `${adminTabs('dashboard')}<div class="stats-grid">
+        <div class="stat-card"><div class="num">${orders.length}</div><div class="label">Заказов</div></div>
+        <div class="stat-card"><div class="num">${products.length}</div><div class="label">Товаров</div></div>
+        <div class="stat-card"><div class="num">${users.length}</div><div class="label">Пользователей</div></div>
+        <div class="stat-card"><div class="num">${money(revenue)}</div><div class="label">Выручка</div></div></div>
+      <h2 class="section-title">Последние заказы</h2>
+      ${orders.length?orders.slice(0,5).map(o=>`<div class="order-card"><div class="order-header"><strong>#${o.id.slice(-6)}</strong><span class="status ${o.status}">${statusLabel(o.status)}</span></div><div style="font-size:13px;color:#6B7280">${new Date(o.createdAt).toLocaleString('ru-RU')} · ${money(o.total)}</div></div>`).join(''):'<p style="color:#6B7280">Заказов нет</p>'}`;
+  },
+  adminProducts(){
+    if(!Auth.isAdmin())return notAllowed();
+    return `${adminTabs('products')}<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <h2 class="section-title" style="margin:0">Товары</h2><button class="btn" id="addProductBtn">+ Добавить товар</button></div>
+      <table class="table"><thead><tr><th>Фото</th><th>Название</th><th>Категория</th><th>Цена</th><th>Склад</th><th></th></tr></thead>
+      <tbody>${Products.all().map(p=>`<tr><td><img src="${p.imageUrl}" style="width:50px;height:50px;object-fit:cover;border-radius:8px" onerror="this.style.display='none'"/></td>
+        <td>${p.title}</td><td>${p.category}</td><td><strong>${money(p.price)}</strong></td><td>${p.stock}</td>
+        <td style="white-space:nowrap"><button class="btn btn-sm btn-outline" data-edit-product="${p.id}">✏️</button> <button class="btn btn-sm btn-danger" data-del-product="${p.id}">🗑️</button></td></tr>`).join('')}</tbody></table>`;
+  },
+  adminOrders(){
+    if(!Auth.isAdmin())return notAllowed();const list=Orders.all().sort((a,b)=>b.createdAt-a.createdAt);
+    return `${adminTabs('orders')}<h2 class="section-title">Все заказы</h2>${list.length?list.map(o=>`<div class="order-card">
+          <div class="order-header"><div><strong>#${o.id.slice(-6)}</strong><div style="font-size:13px;color:#6B7280">${o.userEmail||'—'} · ${new Date(o.createdAt).toLocaleString('ru-RU')}</div></div>
+            <select data-order-status="${o.id}" style="padding:6px 10px;border-radius:10px;border:2px solid #e5e7eb;font-weight:600">
+              <option value="pending" ${o.status==='pending'?'selected':''}>Новый</option><option value="processing" ${o.status==='processing'?'selected':''}>В обработке</option>
+              <option value="shipped" ${o.status==='shipped'?'selected':''}>Отправлен</option><option value="delivered" ${o.status==='delivered'?'selected':''}>Доставлен</option>
+              <option value="cancelled" ${o.status==='cancelled'?'selected':''}>Отменён</option></select></div>
+          ${o.items.map(i=>`<div style="font-size:14px;padding:4px 0">${i.title} × ${i.quantity} = ${money(i.price*i.quantity)}</div>`).join('')}
+          <div style="margin-top:10px;font-size:13px;color:#6B7280"><strong>Имя:</strong> ${o.userName} · <strong>Адрес:</strong> ${o.address} · <strong>Тел:</strong> ${o.phone}</div>
+          <div style="text-align:right;margin-top:8px"><strong style="color:#7C3AED;font-size:18px">${money(o.total)}</strong></div></div>`).join(''):'<p style="color:#6B7280">Заказов нет</p>'}`;
+  },
+  adminUsers(){
+    if(!Auth.isAdmin())return notAllowed();const users=DB.get(K.USERS);
+    if(!users.length)return `${adminTabs('users')}<div class="empty"><div class="empty-icon">👥</div><p>Пользователей пока нет</p></div>`;
+    return `${adminTabs('users')}<h2 class="section-title">Пользователи</h2><table class="table"><thead><tr><th>Имя</th><th>Email</th><th>Роль</th><th>Дата</th></tr></thead>
+      <tbody>${users.map(u=>`<tr><td>${u.name}</td><td>${u.email}</td><td>${u.role==='admin'?'👑 Админ':'👤 Юзер'}</td><td>${new Date(u.createdAt).toLocaleDateString('ru-RU')}</td></tr>`).join('')}</tbody></table>`;
+  }
+};
+  function router(){
+  const hash=location.hash.replace(/^#/,'')||'/';const [path,query]=hash.split('?');const params=new URLSearchParams(query||'');const parts=path.split('/').filter(Boolean);
+  const app=document.getElementById('app');let html='';
+  try{
+    if(!parts.length)html=Pages.home();
+    else if(parts[0]==='catalog')html=Pages.catalog(params);
+    else if(parts[0]==='product'&&parts[1])html=Pages.product(parts[1]);
+    else if(parts[0]==='cart')html=Pages.cart();
+    else if(parts[0]==='checkout')html=Pages.checkout();
+    else if(parts[0]==='login')html=Pages.login();
+    else if(parts[0]==='register')html=Pages.register();
+    else if(parts[0]==='orders')html=Pages.orders();
+    else if(parts[0]==='profile')html=Pages.profile();
+    else if(parts[0]==='admin'){
+      if(parts[1]==='products')html=Pages.adminProducts();
+      else if(parts[1]==='orders')html=Pages.adminOrders();
+      else if(parts[1]==='users')html=Pages.adminUsers();
+      else html=Pages.adminDashboard();
+    }else html=`<div class="empty"><div class="empty-icon">404</div><p>Страница не найдена</p></div>`;
+  }catch(e){console.error(e);html=`<div class="empty"><div class="empty-icon">⚠️</div><p>Ошибка: ${e.message}</p></div>`}
+  app.innerHTML=html;updateAuthUI();bindPageEvents();window.scrollTo(0,0);
+}
+
+function bindPageEvents(){
+  const searchForm=document.getElementById('searchForm');
+  if(searchForm&&!searchForm.dataset.bound){searchForm.dataset.bound='1';searchForm.addEventListener('submit',e=>{e.preventDefault();const q=document.getElementById('searchInput').value.trim();location.hash=q?`#/catalog?q=${encodeURIComponent(q)}`:'#/catalog'})}
+  const logout=document.getElementById('logoutBtn');
+  if(logout&&!logout.dataset.bound){logout.dataset.bound='1';logout.addEventListener('click',e=>{e.preventDefault();Auth.logout();toast('Вы вышли','success');location.hash='#/';router()})}
+  
+  const filterForm=document.getElementById('filterForm');
+  if(filterForm){filterForm.addEventListener('change',()=>{const fd=new FormData(filterForm);const p=new URLSearchParams();['cat','min','max','sort'].forEach(k=>{const v=fd.get(k);if(v)p.set(k,v)});const q=new URLSearchParams(location.hash.split('?')[1]||'').get('q');if(q)p.set('q',q);location.hash=`#/catalog?${p.toString()}`})}
+  
+  const addBtn=document.getElementById('addToCartBtn');
+  if(addBtn)addBtn.addEventListener('click',()=>{const id=location.hash.split('/').pop();Cart.add(id,1);toast('Добавлено в корзину ✅','success')});
+  
+  document.querySelectorAll('[data-cart-plus]').forEach(b=>{b.onclick=()=>{const id=b.dataset.cartPlus;const item=Cart.get().find(i=>i.productId===id);Cart.updateQty(id,(item?.quantity||0)+1);router()}});
+  document.querySelectorAll('[data-cart-minus]').forEach(b=>{b.onclick=()=>{const id=b.dataset.cartMinus;const item=Cart.get().find(i=>i.productId===id);Cart.updateQty(id,(item?.quantity||1)-1);router()}});
+  document.querySelectorAll('[data-cart-remove]').forEach(b=>{b.onclick=()=>{Cart.remove(b.dataset.cartRemove);toast('Удалено','info');router()}});
+
+  const regEmailInput=document.getElementById('regEmailInput');
+  if(regEmailInput){
+    let timer=null;
+    regEmailInput.addEventListener('input',()=>{
+      clearTimeout(timer);const resultBox=document.getElementById('emailCheckResult');const email=regEmailInput.value.trim();
+      if(!email){resultBox.innerHTML='';return}
+      if(!isValidEmailFormat(email)){resultBox.innerHTML='<div class="err">❌ Неверный формат email</div>';return}
+      resultBox.innerHTML='<div class="hint">⏳ Проверяем домен...</div>';
+      timer=setTimeout(async()=>{
+        const exists=await domainExists(email);
+        if(exists===false)resultBox.innerHTML='<div class="err">❌ Такого домена не существует</div>';
+        else if(exists===true)resultBox.innerHTML='<div class="ok">✅ Домен существует</div>';
+        else resultBox.innerHTML='<div class="hint">⚠️ Не удалось проверить</div>';
+      },600);
+    });
+  }
+
+  const loginForm=document.getElementById('loginForm');
+  if(loginForm)loginForm.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(loginForm);try{Auth.login(fd.get('email'),fd.get('password'));toast('Добро пожаловать 👋','success');location.hash='#/';router()}catch(err){toast(err.message,'error')}});
+
+  const regForm=document.getElementById('registerForm');
+  if(regForm)regForm.addEventListener('submit',async e=>{
+    e.preventDefault();const fd=new FormData(regForm);const btn=document.getElementById('regSubmitBtn');
+    btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Проверяем...';
+    try{await Auth.register(fd.get('email'),fd.get('password'),fd.get('name'));toast('Аккаунт создан 🎉','success');location.hash='#/';router()}
+    catch(err){toast(err.message,'error');btn.disabled=false;btn.textContent='Создать аккаунт'}
+  });
+
+  const checkoutForm=document.getElementById('checkoutForm');
+  if(checkoutForm)checkoutForm.addEventListener('submit',async e=>{
+    e.preventDefault();const fd=new FormData(checkoutForm);const btn=document.getElementById('checkoutSubmitBtn');
+    btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Оформляем...';
+    try{
+      const order=Orders.create({address:fd.get('address'),phone:fd.get('phone'),comment:fd.get('comment')});
+      const lines=order.items.map(i=>`• ${i.title} × ${i.quantity} = ${(i.price*i.quantity).toFixed(2)} ₴`).join('\n');
+      const bodyText=`Новый заказ #${order.id.slice(-6)}\n\nПокупатель:\nИмя: ${order.userName}\nEmail: ${order.userEmail}\n\nДоставка:\nАдрес: ${order.address}\nТелефон: ${order.phone}\n\nКомментарий: ${order.comment||'—'}\n\nТовары:\n${lines}\n\nИТОГО: ${order.total.toFixed(2)} ₴\n\nДата: ${new Date(order.createdAt).toLocaleString('ru-RU')}`;
+      const mailtoLink=`mailto:${SHOP_EMAIL}?subject=${encodeURIComponent(`🟣 Новый заказ #${order.id.slice(-6)} от ${order.userName}`)}&body=${encodeURIComponent(bodyText)}`;
+      
+      document.getElementById('app').innerHTML=`<div class="empty" style="background:var(--card);border-radius:20px;padding:40px 20px;box-shadow:var(--shadow);max-width:500px;margin:40px auto;">
+        <div class="empty-icon">🎉</div><h2 style="color:var(--primary);margin-bottom:12px;">Заказ оформлен!</h2>
+        <p>Номер: <strong>#${order.id.slice(-6)}</strong></p>
+        <p style="margin-top:12px;margin-bottom:24px;">Натисніть кнопку нижче, щоб надіслати лист. Відкриється ваш поштовий додаток.</p>
+        <a href="${mailtoLink}" class="btn" style="display:block;margin-bottom:12px;font-size:16px;">📧 Надіслати замовлення</a>
+        <a href="#/orders" class="btn btn-outline" style="display:block;">Мої замовлення</a></div>`;
+      toast('Заказ успешно создан!','success');
+    }catch(err){toast(err.message,'error');btn.disabled=false;btn.textContent='Подтвердить заказ'}
+  });
+
+  const openAdmin=document.getElementById('openAdminModal');
+  if(openAdmin)openAdmin.onclick=showAdminModal;
+  const addProd=document.getElementById('addProductBtn');
+  if(addProd)addProd.onclick=()=>showProductModal();
+  document.querySelectorAll('[data-edit-product]').forEach(b=>{b.onclick=()=>showProductModal(b.dataset.editProduct)});
+  document.querySelectorAll('[data-del-product]').forEach(b=>{b.onclick=()=>{if(confirm('Удалить товар?')){Products.remove(b.dataset.delProduct);toast('Удалён','info');router()}}});
+  document.querySelectorAll('[data-order-status]').forEach(sel=>{sel.onchange=()=>{try{Orders.setStatus(sel.dataset.orderStatus,sel.value);toast('Статус обновлён ✅','success');router()}catch(e){toast(e.message,'error')}}});
+}
+
+function showAdminModal(){
+  const backdrop=document.createElement('div');backdrop.className='modal-backdrop';
+  backdrop.innerHTML=`<div class="modal"><h3>🔑 Введите секретный код</h3><p>Получите доступ к админ-панели.</p>
+    <input type="password" id="adminCodeInput" placeholder="Секретный код" style="width:100%;padding:12px;border:2px solid #e5e7eb;border-radius:10px"/>
+    <div class="modal-actions"><button class="btn btn-outline" id="cancelAdminModal">Отмена</button><button class="btn" id="confirmAdminModal">Подтвердить</button></div></div>`;
+  document.body.appendChild(backdrop);
+  document.getElementById('cancelAdminModal').onclick=()=>backdrop.remove();
+  document.getElementById('confirmAdminModal').onclick=()=>{const code=document.getElementById('adminCodeInput').value;try{Auth.becomeAdmin(code);toast('Вы админ 👑','success');backdrop.remove();router()}catch(e){toast(e.message,'error')}};
+}
+
+function showProductModal(id){
+  const isEdit=!!id;const p=isEdit?Products.byId(id):{title:'',description:'',price:0,imageUrl:'',category:'',stock:0,rating:4};
+  const backdrop=document.createElement('div');backdrop.className='modal-backdrop';
+  backdrop.innerHTML=`<div class="modal"><h3>${isEdit?'✏️ Редактировать':'➕ Новый'} товар</h3>
+    <form id="productForm" style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+      <label style="font-size:13px;font-weight:600">Название</label><input name="title" required value="${p.title}" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px"/>
+      <label style="font-size:13px;font-weight:600">Описание</label><textarea name="description" required rows="3" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px">${p.description}</textarea>
+      <label style="font-size:13px;font-weight:600">Цена (₴)</label><input name="price" type="number" step="0.01" required value="${p.price}" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px"/>
+      <label style="font-size:13px;font-weight:600">Фото товара</label>
+      <input type="file" id="productImageInput" accept="image/*" style="padding:6px;border:2px dashed #A78BFA;border-radius:10px;background:#FAF5FF;cursor:pointer;" />
+      <input name="imageUrl" id="productImageUrl" type="url" placeholder="Или вставьте ссылку (https://...)" value="${p.imageUrl}" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px;font-size:12px;"/>
+      <div id="imagePreviewBox" style="text-align:center;display:${p.imageUrl?'block':'none'};"><img id="imagePreview" src="${p.imageUrl}" style="max-width:100%;max-height:150px;border-radius:10px;object-fit:cover;" /></div>
+      <label style="font-size:13px;font-weight:600">Категория</label><input name="category" required value="${p.category}" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px"/>
+      <label style="font-size:13px;font-weight:600">Кол-во на складе</label><input name="stock" type="number" required value="${p.stock}" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px"/>
+      <div class="modal-actions"><button type="button" class="btn btn-outline" id="cancelProductModal">Отмена</button><button type="submit" class="btn">${isEdit?'Сохранить':'Создать'}</button></div>
+    </form></div>`;
+  document.body.appendChild(backdrop);
+  document.getElementById('cancelProductModal').onclick=()=>backdrop.remove();
+  
+  const fileInput=document.getElementById('productImageInput');const urlInput=document.getElementById('productImageUrl');const previewBox=document.getElementById('imagePreviewBox');const previewImg=document.getElementById('imagePreview');
+  let base64Image=p.imageUrl||'';
+  
+  fileInput.onchange=function(e){
+    const file=e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=function(event){
+      const img=new Image();
+      img.onload=function(){
+        const canvas=document.createElement('canvas');const MAX_WIDTH=500;const scaleSize=MAX_WIDTH/img.width;
+        canvas.width=MAX_WIDTH;canvas.height=img.height*scaleSize;
+        const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,canvas.width,canvas.height);
+        base64Image=canvas.toDataURL('image/jpeg',0.7);
+        previewImg.src=base64Image;previewBox.style.display='block';urlInput.value='';
+      };
+      img.src=event.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+  
+  urlInput.oninput=function(){
+    if(urlInput.value.trim().length>5){base64Image=urlInput.value.trim();previewImg.src=base64Image;previewBox.style.display='block';fileInput.value=''}
+    else{previewBox.style.display='none'}
+  };
+  
+  document.getElementById('productForm').onsubmit=e=>{
+    e.preventDefault();const fd=new FormData(e.target);
+    const finalImage=base64Image||urlInput.value.trim();
+    if(!finalImage){toast('Пожалуйста, выберите фото или вставьте ссылку','error');return}
+    const data={title:fd.get('title'),description:fd.get('description'),price:Number(fd.get('price')),imageUrl:finalImage,category:fd.get('category'),stock:Number(fd.get('stock')),rating:4};
+    try{if(isEdit)Products.update(id,data);else Products.create(data);toast(isEdit?'Товар обновлён ✅':'Товар создан ✅','success');backdrop.remove();router()}catch(err){toast(err.message,'error')}
+  };
+}
+
+window.addEventListener('hashchange',router);
+window.addEventListener('DOMContentLoaded',()=>{if(!location.hash)location.hash='#/';router()});
+</script>
+</body>
+</html>
+
+      
