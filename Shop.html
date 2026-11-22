@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+< lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VioletShop</title>
+<style>
+:root{--primary:#7C3AED;--primary-dark:#5B21B6;--accent:#A78BFA;--bg:#FAF5FF;--card:#fff;--ink:#1E1B4B;--muted:#6B7280;--success:#10B981;--danger:#EF4444;--warning:#F59E0B;--radius:14px;--shadow:0 10px 30px -10px rgba(124,58,237,.35);--gradient:linear-gradient(135deg,#7C3AED 0%,#A78BFA 100%)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--primary);text-decoration:none}a:hover{color:var(--primary-dark)}
+.container{max-width:1200px;margin:0 auto;padding:0 16px}.main{flex:1;padding:24px 16px 48px}
+.header{background:var(--card);box-shadow:0 2px 20px rgba(124,58,237,.08);position:sticky;top:0;z-index:100}
+.header-inner{display:flex;align-items:center;gap:16px;padding:14px 0;flex-wrap:wrap}
+.logo{font-size:22px;font-weight:800;color:var(--primary)}.search{flex:1;display:flex;min-width:200px;max-width:500px}
+.search input{flex:1;padding:10px 14px;border:2px solid var(--accent);border-right:none;border-radius:10px 0 0 10px;outline:none;font-size:14px}.search input:focus{border-color:var(--primary)}
+.search button{padding:10px 20px;border:none;background:var(--gradient);color:#fff;font-weight:600;cursor:pointer;border-radius:0 10px 10px 0}
+.nav{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.nav-link{font-weight:600;color:var(--ink);font-size:14px}.nav-link:hover{color:var(--primary)}
+.cart-badge{background:var(--primary);color:#fff;border-radius:50%;font-size:11px;padding:2px 7px;margin-left:4px}
+.btn{display:inline-block;padding:10px 20px;border:none;cursor:pointer;background:var(--gradient);color:#fff;font-weight:600;border-radius:10px;font-size:14px;transition:transform .15s}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}.btn-outline{background:transparent;color:var(--primary);border:2px solid var(--primary)}.btn-danger{background:var(--danger)}.btn-sm{padding:6px 12px;font-size:13px}
+.banner{background:var(--gradient);color:#fff;border-radius:20px;padding:48px 32px;text-align:center;margin-bottom:32px;box-shadow:var(--shadow)}
+.banner h1{font-size:36px;margin-bottom:12px}.banner p{font-size:16px;opacity:.95;margin-bottom:20px}.banner .btn{background:#fff;color:var(--primary)}
+.section-title{font-size:24px;margin:24px 0 16px}.category-chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.chip{padding:8px 18px;border-radius:99px;background:var(--card);border:2px solid var(--accent);cursor:pointer;font-weight:600;font-size:14px;color:var(--ink);transition:all .15s}
+.chip:hover,.chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.grid{display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.card{background:var(--card);border-radius:var(--radius);overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}.card img{width:100%;height:180px;object-fit:cover;background:#eee}
+.card-body{padding:14px;flex:1;display:flex;flex-direction:column;gap:6px}.card-title{font-size:15px;font-weight:600;line-height:1.3}
+.card-category{font-size:12px;color:var(--muted)}.card-price{font-size:18px;font-weight:800;color:var(--primary);margin-top:auto}.card-rating{font-size:13px;color:#F59E0B}
+.product-detail{display:grid;grid-template-columns:1fr 1fr;gap:40px;background:var(--card);border-radius:20px;padding:32px;box-shadow:var(--shadow)}
+.product-detail img{width:100%;border-radius:var(--radius);object-fit:cover;aspect-ratio:1;background:#eee}
+.product-info h1{font-size:28px;margin-bottom:12px}.product-info .price{font-size:32px;font-weight:800;color:var(--primary);margin:16px 0}.product-info p{color:var(--muted);line-height:1.6;margin-bottom:20px}
+@media(max-width:720px){.product-detail{grid-template-columns:1fr}}
+.form{max-width:420px;margin:32px auto;background:var(--card);padding:32px;border-radius:20px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:16px}
+.form h2{text-align:center;margin-bottom:8px}.form label{font-weight:600;font-size:14px}
+.form input,.form textarea,.form select{width:100%;padding:12px 14px;border:2px solid #e5e7eb;border-radius:10px;font-size:14px;outline:none;font-family:inherit}
+.form input:focus,.form textarea:focus{border-color:var(--primary)}.form .hint{font-size:12px;color:var(--muted);margin-top:-8px}
+.form .err{color:var(--danger);font-size:13px;margin-top:-8px;font-weight:600}.form .ok{color:var(--success);font-size:13px;margin-top:-8px;font-weight:600}
+.cart-item{display:flex;gap:16px;align-items:center;background:var(--card);padding:16px;border-radius:var(--radius);margin-bottom:12px}
+.cart-item img{width:80px;height:80px;object-fit:cover;border-radius:10px}.cart-item-info{flex:1}.cart-item-info h4{font-size:15px;margin-bottom:4px}.cart-item-info .price{color:var(--primary);font-weight:700}
+.qty{display:flex;gap:6px;align-items:center}.qty button{width:30px;height:30px;border-radius:8px;border:2px solid var(--accent);background:#fff;cursor:pointer;font-weight:700}
+.cart-summary{background:var(--card);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow);margin-top:20px}.cart-total{font-size:24px;font-weight:800;color:var(--primary)}
+.order-card{background:var(--card);padding:20px;border-radius:var(--radius);margin-bottom:16px;box-shadow:0 4px 12px rgba(124,58,237,.08)}
+.order-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.status{padding:4px 12px;border-radius:99px;font-size:12px;font-weight:700;color:#fff}
+.status.pending{background:#F59E0B}.status.processing{background:#3B82F6}.status.shipped{background:#8B5CF6}.status.delivered{background:var(--success)}.status.cancelled{background:var(--danger)}
+.admin-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;border-bottom:2px solid #e5e7eb;padding-bottom:12px}
+.admin-tabs a{padding:8px 16px;border-radius:10px;font-weight:600;color:var(--ink)}.admin-tabs a.active{background:var(--primary);color:#fff}
+.stats-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));margin-bottom:24px}
+.stat-card{background:var(--gradient);color:#fff;padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)}.stat-card .num{font-size:32px;font-weight:800}.stat-card .label{font-size:13px;opacity:.9}
+.table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden}
+.table th,.table td{padding:12px;text-align:left;border-bottom:1px solid #f3f4f6;font-size:14px}.table th{background:#F5F3FF;font-weight:700}.table tr:last-child td{border-bottom:none}
+.modal-backdrop{position:fixed;inset:0;background:rgba(30,27,75,.5);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px}
+.modal{background:var(--card);padding:28px;border-radius:20px;max-width:440px;width:100%;box-shadow:var(--shadow);max-height:90vh;overflow-y:auto}
+.modal h3{margin-bottom:12px}.modal p{color:var(--muted);margin-bottom:16px;font-size:14px}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:2000;align-items:center}
+.toast-item{background:var(--primary-dark);color:#fff;padding:12px 24px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:var(--shadow);animation:slideUp .3s ease;max-width:90vw}
+.toast-item.error{background:var(--danger)}.toast-item.success{background:var(--success)}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}.empty-icon{font-size:64px;margin-bottom:12px}
+.footer{background:var(--card);padding:32px 16px 16px;margin-top:40px;border-top:2px solid #F5F3FF}
+.footer-inner{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:24px;margin-bottom:24px}
+.footer-inner strong{display:block;margin-bottom:6px;color:var(--primary)}.footer-inner p{color:var(--muted);font-size:14px}.copy{text-align:center;color:var(--muted);font-size:13px}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:640px){.banner h1{font-size:24px}.banner{padding:32px 20px}.search{order:3;width:100%;max-width:none}.nav{font-size:13px;gap:10px}.grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.card img{height:140px}.cart-item img{width:60px;height:60px}.product-detail{padding:20px}}
+</style>
+</head>
+<>
+<header class="header">
+  <div class="container header-inner">
+    <a href="#/" class="logo">🟣 VioletShop</a>
+    <form class="search" id="searchForm">
+      <input type="text" id="searchInput" placeholder="Поиск товаров..." />
+      <button type="submit">Найти</button>
+    </form>
+    <nav class="nav">
+      <a href="#/catalog" class="nav-link">Каталог</a>
+      <a href="#/cart" class="nav-link">🛒 Корзина <span class="cart-badge" id="cartBadge">0</span></a>
+      <a href="#/wishlist" class="nav-link auth-only" style="display:none">❤️ Избранное</a>
+      <a href="#/orders" class="nav-link auth-only" style="display:none">Заказы</a>
+      <a href="#/profile" class="nav-link auth-only" style="display:none">Профиль</a>
+      <a href="#/admin" class="nav-link admin-only" style="display:none">⚙️ Админ</a>
+      <a href="#/login" class="nav-link guest-only">Войти</a>
+      <a href="#" class="nav-link auth-only" style="display:none" id="logoutBtn">Выйти</a>
+    </nav>
+  </div>
+</header>
+<main id="app" class="container main"></main>
+<footer class="footer">
+  <div class="container footer-inner">
+    <div><strong>🟣 VioletShop</strong><p>Маркетплейс с фиолетовым характером.</p></div>
+    <div><strong>Контакты</strong><p>igormakarevich24@gmail.com</p></div>
+    <div><strong>Ссылки</strong><p><a href="#/catalog">Каталог</a> · <a href="#/cart">Корзина</a></p></div>
+  </div>
+  <p class="copy">© 2024 VioletShop</p>
+</footer>
+<div id="toast"></div>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyD2CI_hJ9uUxJDzwuKhJq0de4Irj_A85kg",
+  authDomain: "olykashop-2e9e6.firebaseapp.com",
+  databaseURL: "https://olykashop-2e9e6-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "olykashop-2e9e6",
+  storageBucket: "olykashop-2e9e6.firebasestorage.app",
+  messagingSenderId: "211418312517",
+  appId: "1:211418312517:web:3b3c878af764d55562182c"
+};
+const SHOP_EMAIL = 'igormakarevich24@gmail.com';
+const SECRET_ADMIN_CODE = 'MY_SUPER_SECRET_2024';
+const ADMIN_ATTEMPTS_KEY = 'vs_admin_attempts';
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const auth = firebase.auth();
+const DB = {
+  async get(key) { const snapshot = await db.ref(key).once('value'); const val = snapshot.val(); if (!val) return []; return Object.values(val); },
+  async push(key, item) { await db.ref(`${key}/${item.id}`).set(item); },
+  async update(key, id, item) { await db.ref(`${key}/${id}`).update(item); },
+  async remove(key, id) { await db.ref(`${key}/${id}`).remove(); },
+  uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+};
+const K = { USERS: 'vs_users', PRODUCTS: 'vs_products', ORDERS: 'vs_orders', CART: 'vs_cart', WISHLIST: 'vs_wishlist' };
+async function seedDatabase() {
+  const existing = await DB.get(K.PRODUCTS);
+  if (existing.length > 0) return;
+  const img = q => `https://images.unsplash.com/${q}?auto=format&fit=crop&w=600&q=60`;
+  const items = [['Беспроводные наушники',49.99,'Электроника',4.6,'photo-1505740420928-5e560c06d30e'],['Смарт-часы',89.9,'Электроника',4.4,'photo-1523275335684-37898b6baf30'],['Худи оверсайз',32,'Одежда',4.5,'photo-1556821840-3a63f95609a7'],['Кроссовки белые',65,'Одежда',4.7,'photo-1542291026-7eec264c27ff'],['Ароматическая свеча',12.5,'Дом',4.6,'photo-1602874801006-e26a7a4b0c2d'],['Крем для лица',24,'Красота',4.6,'photo-1556228720-195a672e8a03'],['Плюшевый мишка',18,'Игрушки',4.8,'photo-1559454403-b8fb88521f11']];
+  for (let i of items) { const p = {id:DB.uid(),title:i[0],price:i[1],category:i[2],rating:i[3],stock:20,description:`${i[0]} — качественный товар.`,imageUrl:img(i[4]),images:[img(i[4])],reviews:[],createdAt:Date.now()}; await DB.push(K.PRODUCTS, p); }
+}
+function isValidEmailFormat(email){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)}
+async function domainExists(email){const domain=email.split('@')[1];if(!domain)return false;try{const res=await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);const data=await res.json();return Array.isArray(data.Answer)&&data.Answer.length>0;}catch(e){return null}}
+async function validateEmail(email){if(!isValidEmailFormat(email))return{ok:false,msg:'Неверный формат email'};const exists=await domainExists(email);if(exists===false)return{ok:false,msg:'Домен этой почты не существует'};return{ok:true}}
+const Auth = {
+  currentUser() { return auth.currentUser; },
+  isAdmin() { return sessionStorage.getItem('isAdmin') === 'true'; },
+  async register(email, password, name) { const check = await validateEmail(email); if (!check.ok) throw new Error(check.msg); const userCredential = await auth.createUserWithEmailAndPassword(email, password); await userCredential.user.updateProfile({ displayName: name }); await DB.update(K.USERS, userCredential.user.uid, { id: userCredential.user.uid, email, name, role: 'user', createdAt: Date.now() }); return userCredential.user; },
+  async login(email, password) { const userCredential = await auth.signInWithEmailAndPassword(email, password); const snap = await db.ref(`${K.USERS}/${userCredential.user.uid}`).once('value'); const data = snap.val(); if (data && data.role === 'admin') sessionStorage.setItem('isAdmin', 'true'); return userCredential.user; },
+  async logout() { sessionStorage.removeItem('isAdmin'); await auth.signOut(); },
+  async becomeAdmin(code) { const user = this.currentUser(); if (!user) throw new Error('Сначала войдите'); const attempts = JSON.parse(localStorage.getItem(ADMIN_ATTEMPTS_KEY)||'[]'); const now = Date.now(); const recent = attempts.filter(t=>now-t<15*60*1000); if(recent.length>=5) throw new Error('Много попыток. Ждите 15 минут'); if (code !== SECRET_ADMIN_CODE) { recent.push(now); localStorage.setItem(ADMIN_ATTEMPTS_KEY, JSON.stringify(recent)); throw new Error('Неверный секретный код'); } await DB.update(K.USERS, user.uid, { role: 'admin' }); sessionStorage.setItem('isAdmin', 'true'); localStorage.removeItem(ADMIN_ATTEMPTS_KEY); return true; }
+};
+const Products = {
+  async all(){ return await DB.get(K.PRODUCTS); },
+  async byId(id){ const all = await this.all(); return all.find(p=>p.id===id); },
+  async categories(){ const all = await this.all(); return [...new Set(all.map(p=>p.category))]; },
+  async filter({category,search,minPrice,maxPrice,sort}){let list = await this.all();if(category)list=list.filter(p=>p.category===category);if(search){const q=search.toLowerCase();list=list.filter(p=>p.title.toLowerCase().includes(q))}if(minPrice!=null)list=list.filter(p=>p.price>=minPrice);if(maxPrice!=null)list=list.filter(p=>p.price<=maxPrice);if(sort==='price_asc')list.sort((a,b)=>a.price-b.price);else if(sort==='price_desc')list.sort((a,b)=>b.price-a.price);else if(sort==='rating')list.sort((a,b)=>b.rating-a.rating);else list.sort((a,b)=>b.createdAt-a.createdAt);return list;},
+  async create(data){ const p = {id:DB.uid(),createdAt:Date.now(),reviews:[],...data}; await DB.push(K.PRODUCTS, p); return p; },
+  async update(id,data){ await DB.update(K.PRODUCTS, id, data); },
+  async remove(id){ await DB.remove(K.PRODUCTS, id); },
+  async addReview(productId, review) { const p = await this.byId(productId); if (!p) return; if (!p.reviews) p.reviews = []; p.reviews.push(review); const totalRating = p.reviews.reduce((sum, r) => sum + r.rating, 0); p.rating = totalRating / p.reviews.length; await this.update(productId, { reviews: p.reviews, rating: p.rating }); }
+};
+const Cart = {
+  get(){ return JSON.parse(localStorage.getItem(K.CART)||'[]'); },
+  set(items){ localStorage.setItem(K.CART, JSON.stringify(items)); updateCartBadge(); },
+  add(productId,quantity=1){ const items=this.get();const ex=items.find(i=>i.productId===productId);if(ex)ex.quantity+=quantity;else items.push({productId,quantity});this.set(items); },
+  updateQty(productId,quantity){ const items=this.get();const item=items.find(i=>i.productId===productId);if(!item)return;if(quantity<=0)return this.remove(productId);item.quantity=quantity;this.set(items); },
+  remove(productId){ this.set(this.get().filter(i=>i.productId!==productId)); },
+  clear(){ this.set([]); },
+  count(){ return this.get().reduce((s,i)=>s+i.quantity,0); },
+  async detailed(){ const items = this.get(); const result = []; for (let i of items) { const p = await Products.byId(i.productId); if (p) result.push({...i, product: p, subtotal: p.price * i.quantity}); } return result; },
+  async total(){ const det = await this.detailed(); return det.reduce((s,i)=>s+i.subtotal,0); }
+};
+function updateCartBadge(){const el=document.getElementById('cartBadge');if(el)el.textContent=Cart.count()}
+const Orders = {
+  async all(){ return await DB.get(K.ORDERS); },
+  async my(){ const user = Auth.currentUser(); if(!user)return[]; const all = await this.all(); return all.filter(o=>o.userId===user.uid).sort((a,b)=>b.createdAt-a.createdAt); },
+  async create({address,phone,comment}){const user=Auth.currentUser();if(!user)throw new Error('Войдите');const cart = await Cart.detailed(); if(!cart.length)throw new Error('Корзина пуста');const order={id:DB.uid(),userId:user.uid,userEmail:user.email,userName:user.displayName||'Клиент',total: await Cart.total(),status:'pending',address,phone,comment:comment||'',items:cart.map(i=>({productId:i.productId,title:i.product.title,quantity:i.quantity,price:i.product.price})),createdAt:Date.now()};await DB.push(K.ORDERS, order); Cart.clear(); return order;},
+  async setStatus(id,status){ await DB.update(K.ORDERS, id, {status}); }
+};
+  function money(n){return n.toFixed(2)+' ₴'}
+function toast(msg,type='info'){const box=document.getElementById('toast');const el=document.createElement('div');el.className=`toast-item ${type}`;el.textContent=msg;box.appendChild(el);setTimeout(()=>el.remove(),3000);}
+function updateAuthUI(){const user=Auth.currentUser();const isAdmin=Auth.isAdmin();document.querySelectorAll('.auth-only').forEach(e=>{e.style.display=user?'':'none'});document.querySelectorAll('.guest-only').forEach(e=>{e.style.display=user?'none':''});document.querySelectorAll('.admin-only').forEach(e=>{e.style.display=isAdmin?'':'none'});updateCartBadge();}
+function statusLabel(s){return{pending:'Новый',processing:'В обработке',shipped:'Отправлен',delivered:'Доставлен',cancelled:'Отменён'}[s]||s}
+function adminTabs(active){const tabs=[['dashboard','📊 Дашборд','#/admin'],['products','📦 Товары','#/admin/products'],['orders','📋 Заказы','#/admin/orders'],['users','👥 Пользователи','#/admin/users']];return `<div class="admin-tabs">${tabs.map(([k,l,h])=>`<a href="${h}" class="${k===active?'active':''}">${l}</a>`).join('')}</div>`;}
+function notAllowed(){return `<div class="empty"><div class="empty-icon">🚫</div><p>Доступ только для админа</p><a href="#/" class="btn" style="margin-top:16px">На главную</a></div>`}
+function renderProductCard(p){return `<a class="card" href="#/product/${p.id}"><img src="${p.imageUrl}" alt="${p.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'"/><div class="card-body"><div class="card-category">${p.category}</div><div class="card-title">${p.title}</div><div class="card-rating">⭐ ${p.rating.toFixed(1)}</div><div class="card-price">${money(p.price)}</div></div></a>`;}
+const Pages={
+  async home(){const popular = (await Products.all()).sort((a,b)=>b.rating-a.rating).slice(0,8);const cats = await Products.categories();return `<div class="banner"><h1>🟣 Добро пожаловать в VioletShop</h1><p>Тысячи товаров по лучшим ценам. Быстрая доставка.</p><a href="#/catalog" class="btn">В каталог →</a></div><h2 class="section-title">Категории</h2><div class="category-chips">${cats.map(c=>`<a class="chip" href="#/catalog?cat=${encodeURIComponent(c)}">${c}</a>`).join('')}</div><h2 class="section-title">Популярные товары</h2><div class="grid">${popular.map(renderProductCard).join('')}</div>`;},
+  async catalog(params){const cat=params.get('cat')||'';const search=params.get('q')||'';const sort=params.get('sort')||'';const minPrice=params.get('min')?Number(params.get('min')):null;const maxPrice=params.get('max')?Number(params.get('max')):null;const list = await Products.filter({category:cat,search,sort,minPrice,maxPrice});const cats = await Products.categories();return `<h1 class="section-title">Каталог</h1><form class="form" style="max-width:none;margin:0 0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));" id="filterForm"><div><label>Категория</label><select name="cat"><option value="">Все</option>${cats.map(c=>`<option ${c===cat?'selected':''} value="${c}">${c}</option>`).join('')}</select></div><div><label>Цена от</label><input type="number" name="min" min="0" value="${minPrice??''}" placeholder="0"/></div><div><label>Цена до</label><input type="number" name="max" min="0" value="${maxPrice??''}" placeholder="∞"/></div><div><label>Сортировка</label><select name="sort"><option value="">Новые</option><option ${sort==='price_asc'?'selected':''} value="price_asc">Дешевле</option><option ${sort==='price_desc'?'selected':''} value="price_desc">Дороже</option><option ${sort==='rating'?'selected':''} value="rating">По рейтингу</option></select></div></form><p style="margin-bottom:16px;color:#6B7280">Найдено: <strong>${list.length}</strong></p>${list.length?`<div class="grid">${list.map(renderProductCard).join('')}</div>`:`<div class="empty"><div class="empty-icon">🔍</div><p>Ничего не найдено</p></div>`}`;},
+  async product(id){const p = await Products.byId(id);if(!p)return `<div class="empty"><div class="empty-icon">❓</div><p>Товар не найден</p></div>`;const wishlist = JSON.parse(localStorage.getItem(K.WISHLIST)||'[]');const isWished = wishlist.includes(p.id);const images = p.images || [p.imageUrl];const reviews = p.reviews || [];const user = Auth.currentUser();return `<div class="product-detail"><div style="display:flex;flex-direction:column;gap:10px;"><img id="mainProductImage" src="${images[0]}" alt="${p.title}" onerror="this.src='https://via.placeholder.com/600?text=No+Image'"/>${images.length > 1 ? `<div style="display:flex;gap:10px;overflow-x:auto;">${images.map((img, idx) => `<img src="${img}" onclick="document.getElementById('mainProductImage').src='${img}'" style="width:60px;height:60px;object-fit:cover;border-radius:8px;cursor:pointer;border:2px solid ${idx===0?'var(--primary)':'transparent'}"/>`).join('')}</div>` : ''}</div><div class="product-info"><div style="display:flex;justify-content:space-between;align-items:flex-start;"><div><div class="card-category">${p.category}</div><h1>${p.title}</h1></div><button id="wishlistBtn" class="btn btn-sm ${isWished?'btn-danger':'btn-outline'}" style="border-radius:50%;width:40px;height:40px;padding:0;font-size:18px;">${isWished?'❤️':'🤍'}</button></div><div class="card-rating">⭐ ${p.rating.toFixed(1)} · В наличии: ${p.stock}</div><div class="price">${money(p.price)}</div><p>${p.description}</p><button class="btn" id="addToCartBtn" style="width:100%;margin-bottom:10px;">🛒 В корзину</button><div style="margin-top:30px;border-top:2px solid #F5F3FF;padding-top:20px;"><h3 style="margin-bottom:15px;">Отзывы (${reviews.length})</h3><div id="reviewsList">${reviews.length ? reviews.map(r => `<div style="background:#F9FAFB;padding:10px;border-radius:10px;margin-bottom:10px;"><div style="font-weight:600;display:flex;justify-content:space-between;"><span>${r.userName}</span><span style="color:#F59E0B;">${'⭐'.repeat(r.rating)}</span></div><p style="font-size:14px;margin-top:5px;color:#4B5563;">${r.text}</p></div>`).join('') : '<p style="color:#6B7280;font-size:14px;">Отзывов пока нет. Будьте первым!</p>'}</div>${user ? `<form id="reviewForm" style="margin-top:15px;background:#FAF5FF;padding:15px;border-radius:10px;"><h4 style="margin-bottom:10px;">Оставить отзыв</h4><select name="rating" required style="width:100%;padding:8px;margin-bottom:8px;border-radius:8px;border:1px solid #ccc;"><option value="5">5 звезд ⭐⭐⭐⭐⭐</option><option value="4">4 звезды ⭐⭐⭐⭐</option><option value="3">3 звезды ⭐⭐⭐</option><option value="2">2 звезды ⭐⭐</option><option value="1">1 звезда ⭐</option></select><textarea name="text" required placeholder="Ваш отзыв..." rows="2" style="width:100%;padding:8px;margin-bottom:8px;border-radius:8px;border:1px solid #ccc;"></textarea><button type="submit" class="btn btn-sm" style="width:100%;">Отправить</button></form>` : `<p style="font-size:14px;margin-top:10px;"><a href="#/login">Войдите</a>, чтобы оставить отзыв.</p>`}</div></div></div>`;},
+  async wishlist() {const user = Auth.currentUser(); if (!user) return `<div class="empty">Войдите</div>`;const wishlist = JSON.parse(localStorage.getItem(K.WISHLIST)||'[]'); const all = await Products.all(); const items = all.filter(p => wishlist.includes(p.id));if (!items.length) return `<div class="empty"><div class="empty-icon">❤️</div><p>Список бажань порожній</p><a href="#/catalog" class="btn" style="margin-top:16px">В каталог</a></div>`;return `<h1 class="section-title">❤️ Избранное</h1><div class="grid">${items.map(renderProductCard).join('')}</div>`;},
+  async cart(){const items = await Cart.detailed();if(!items.length)return `<div class="empty"><div class="empty-icon">🛒</div><p>Корзина пуста</p><a href="#/catalog" class="btn" style="margin-top:16px">В каталог</a></div>`;return `<h1 class="section-title">Корзина</h1>${items.map(i=>`<div class="cart-item"><img src="${i.product.imageUrl}" alt=""/><div class="cart-item-info"><h4>${i.product.title}</h4><div class="price">${money(i.product.price)}</div></div><div class="qty"><button data-cart-minus="${i.productId}">−</button><span>${i.quantity}</span><button data-cart-plus="${i.productId}">+</button></div><strong>${money(i.subtotal)}</strong><button class="btn btn-sm btn-danger" data-cart-remove="${i.productId}">✕</button></div>`).join('')}<div class="cart-summary"><div style="display:flex;justify-content:space-between;align-items:center;"><span>Итого:</span><span class="cart-total">${money(await Cart.total())}</span></div><a href="#/checkout" class="btn" style="width:100%;text-align:center;margin-top:16px;display:block;">Оформить заказ →</a></div>`;},
+  async checkout(){if(!Auth.currentUser())return `<div class="empty"><div class="empty-icon">🔒</div><p>Войдите, чтобы оформить заказ</p><a href="#/login" class="btn" style="margin-top:16px">Войти</a></div>`;if(!Cart.count())return `<div class="empty"><div class="empty-icon">🛒</div><p>Корзина пуста</p></div>`;const user=Auth.currentUser();return `<form class="form" id="checkoutForm" style="max-width:520px"><h2>Оформление заказа</h2><label>Имя</label><input name="name" value="${user.displayName||''}" required/><label>Телефон</label><input name="phone" type="tel" placeholder="+380..." required/><label>Адрес доставки</label><textarea name="address" rows="2" required placeholder="Город, улица, дом, квартира"></textarea><label>Комментарий</label><textarea name="comment" rows="2"></textarea><div style="display:flex;justify-content:space-between;padding:12px 0;border-top:2px solid #F5F3FF;"><span>Итого:</span><strong style="color:#7C3AED;font-size:20px">${money(await Cart.total())}</strong></div><button class="btn" type="submit" id="checkoutSubmitBtn">Подтвердить заказ</button><p class="hint">📧 Заказ будет отправлен на ${SHOP_EMAIL}</p></form>`;},
+  login(){return `<form class="form" id="loginForm"><h2>Вход</h2><label>Email</label><input name="email" type="email" required placeholder="your@email.com"/><label>Пароль</label><input name="password" type="password" required/><button class="btn" type="submit">Войти</button><p style="text-align:center;font-size:14px;color:#6B7280">Нет аккаунта? <a href="#/register">Зарегистрироваться</a></p></form>`;},
+  register(){return `<form class="form" id="registerForm"><h2>Регистрация</h2><label>Имя</label><input name="name" required placeholder="Ваше имя"/><label>Email</label><input name="email" type="email" required placeholder="your@email.com" id="regEmailInput"/><div id="emailCheckResult"></div><label>Пароль (мин 6)</label><input name="password" type="password" minlength="6" required/><button class="btn" type="submit" id="regSubmitBtn">Создать аккаунт</button><p class="hint">Проверяем формат и домен почты</p></form>`;},
+  async orders(){if(!Auth.currentUser())return `<div class="empty">Войдите</div>`;const list = await Orders.my();if(!list.length)return `<div class="empty"><div class="empty-icon">📦</div><p>Заказов нет</p><a href="#/catalog" class="btn" style="margin-top:16px">В каталог</a></div>`;return `<h1 class="section-title">Мои заказы</h1>${list.map(o=>`<div class="order-card"><div class="order-header"><div><strong>Заказ #${o.id.slice(-6)}</strong></div><span class="status ${o.status}">${statusLabel(o.status)}</span></div><div style="font-size:13px;color:#6B7280;margin-bottom:12px">${new Date(o.createdAt).toLocaleString('ru-RU')} · ${o.address}</div>${o.items.map(i=>`<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;border-bottom:1px solid #f3f4f6"><span>${i.title} × ${i.quantity}</span><strong>${money(i.price*i.quantity)}</strong></div>`).join('')}<div style="text-align:right;margin-top:12px"><strong style="color:#7C3AED;font-size:18px">Итого: ${money(o.total)}</strong></div></div>`).join('')}`;},
+  profile(){const user=Auth.currentUser();if(!user)return `<div class="empty">Войдите</div>`;return `<div class="form"><h2>Профиль</h2><p><strong>Имя:</strong> ${user.displayName||'Без имени'}</p><p><strong>Email:</strong> ${user.email}</p><p><strong>Роль:</strong> ${Auth.isAdmin()?'👑 Админ':'👤 Пользователь'}</p>${!Auth.isAdmin()?`<button class="btn btn-outline" id="openAdminModal" style="margin-top:12px">🔑 Стать продавцом (ввести код)</button>`:`<a href="#/admin" class="btn" style="text-align:center;margin-top:12px">⚙️ В админ-панель</a>`}</div>`;},
+  async adminDashboard(){if(!Auth.isAdmin())return notAllowed();const orders=await Orders.all();const users=await DB.get(K.USERS);const products=await Products.all();const revenue=orders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+o.total,0);return `${adminTabs('dashboard')}<div class="stats-grid"><div class="stat-card"><div class="num">${orders.length}</div><div class="label">Заказов</div></div><div class="stat-card"><div class="num">${products.length}</div><div class="label">Товаров</div></div><div class="stat-card"><div class="num">${users.length}</div><div class="label">Пользователей</div></div><div class="stat-card"><div class="num">${money(revenue)}</div><div class="label">Выручка</div></div></div><h2 class="section-title">Последние заказы</h2>${orders.length?orders.slice(0,5).map(o=>`<div class="order-card"><div class="order-header"><strong>#${o.id.slice(-6)}</strong><span class="status ${o.status}">${statusLabel(o.status)}</span></div><div style="font-size:13px;color:#6B7280">${new Date(o.createdAt).toLocaleString('ru-RU')} · ${money(o.total)}</div></div>`).join(''):'<p style="color:#6B7280">Заказов нет</p>'}`;},
+  async adminProducts(){if(!Auth.isAdmin())return notAllowed();const products = await Products.all();return `${adminTabs('products')}<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h2 class="section-title" style="margin:0">Товары</h2><button class="btn" id="addProductBtn">+ Добавить товар</button></div><table class="table"><thead><tr><th>Фото</th><th>Название</th><th>Категория</th><th>Цена</th><th>Склад</th><th></th></tr></thead><tbody>${products.map(p=>`<tr><td><img src="${p.imageUrl}" style="width:50px;height:50px;object-fit:cover;border-radius:8px" onerror="this.style.display='none'"/></td><td>${p.title}</td><td>${p.category}</td><td><strong>${money(p.price)}</strong></td><td>${p.stock}</td><td style="white-space:nowrap"><button class="btn btn-sm btn-outline" data-edit-product="${p.id}">✏️</button> <button class="btn btn-sm btn-danger" data-del-product="${p.id}">🗑️</button></td></tr>`).join('')}</tbody></table>`;},
+  async adminOrders(){if(!Auth.isAdmin())return notAllowed();const list=(await Orders.all()).sort((a,b)=>b.createdAt-a.createdAt);return `${adminTabs('orders')}<h2 class="section-title">Все заказы</h2>${list.length?list.map(o=>`<div class="order-card"><div class="order-header"><div><strong>#${o.id.slice(-6)}</strong><div style="font-size:13px;color:#6B7280">${o.userEmail||'—'} · ${new Date(o.createdAt).toLocaleString('ru-RU')}</div></div><select data-order-status="${o.id}" style="padding:6px 10px;border-radius:10px;border:2px solid #e5e7eb;font-weight:600"><option value="pending" ${o.status==='pending'?'selected':''}>Новый</option><option value="processing" ${o.status==='processing'?'selected':''}>В обработке</option><option value="shipped" ${o.status==='shipped'?'selected':''}>Отправлен</option><option value="delivered" ${o.status==='delivered'?'selected':''}>Доставлен</option><option value="cancelled" ${o.status==='cancelled'?'selected':''}>Отменён</option></select></div>${o.items.map(i=>`<div style="font-size:14px;padding:4px 0">${i.title} × ${i.quantity} = ${money(i.price*i.quantity)}</div>`).join('')}<div style="margin-top:10px;font-size:13px;color:#6B7280"><strong>Имя:</strong> ${o.userName} · <strong>Адрес:</strong> ${o.address} · <strong>Тел:</strong> ${o.phone}</div><a href="mailto:${o.userEmail}" class="btn btn-sm" style="margin-top:10px;display:inline-block;">✉️ Написать клиенту (Email)</a><div style="text-align:right;margin-top:8px"><strong style="color:#7C3AED;font-size:18px">${money(o.total)}</strong></div></div>`).join(''):'<p style="color:#6B7280">Заказов нет</p>'}`;},
+  async adminUsers(){if(!Auth.isAdmin())return notAllowed();const users=await DB.get(K.USERS);if(!users.length)return `${adminTabs('users')}<div class="empty"><div class="empty-icon">👥</div><p>Пользователей пока нет</p></div>`;return `${adminTabs('users')}<h2 class="section-title">Пользователи</h2><table class="table"><thead><tr><th>Имя</th><th>Email</th><th>Роль</th><th>Дата</th></tr></thead><tbody>${users.map(u=>`<tr><td>${u.name}</td><td>${u.email}</td><td>${u.role==='admin'?'👑 Админ':'👤 Юзер'}</td><td>${new Date(u.createdAt).toLocaleDateString('ru-RU')}</td></tr>`).join('')}</tbody></table>`;}
+};
+async function router(){const hash=location.hash.replace(/^#/,'')||'/';const [path,query]=hash.split('?');const params=new URLSearchParams(query||'');const parts=path.split('/').filter(Boolean);const app=document.getElementById('app');app.innerHTML = `<div class="empty"><div class="spinner" style="border-color:#7C3AED;border-top-color:transparent;width:40px;height:40px;margin-bottom:12px;"></div><p>Загрузка...</p></div>`;let html='';try{if(!parts.length)html = await Pages.home();else if(parts[0]==='catalog')html = await Pages.catalog(params);else if(parts[0]==='product'&&parts[1])html = await Pages.product(parts[1]);else if(parts[0]==='cart')html = await Pages.cart();else if(parts[0]==='wishlist')html = await Pages.wishlist();else if(parts[0]==='checkout')html = await Pages.checkout();else if(parts[0]==='login')html = Pages.login();else if(parts[0]==='register')html = Pages.register();else if(parts[0]==='orders')html = await Pages.orders();else if(parts[0]==='profile')html = Pages.profile();else if(parts[0]==='admin'){if(parts[1]==='products')html = await Pages.adminProducts();else if(parts[1]==='orders')html = await Pages.adminOrders();else if(parts[1]==='users')html = await Pages.adminUsers();else html = await Pages.adminDashboard();}else html = `<div class="empty"><div class="empty-icon">404</div><p>Страница не найдена</p></div>`;}catch(e){console.error(e);html = `<div class="empty"><div class="empty-icon">⚠️</div><p>Ошибка: ${e.message}</p></div>`;}app.innerHTML=html;updateAuthUI();bindPageEvents();window.scrollTo(0,0);}
+function bindPageEvents(){
+  const searchForm=document.getElementById('searchForm');
+  if(searchForm&&!searchForm.dataset.bound){
+    searchForm.dataset.bound='1';
+    searchForm.addEventListener('submit',e=>{
+      e.preventDefault();
+      const q=document.getElementById('searchInput').value.trim();
+      location.hash=q?`#/catalog?q=${encodeURIComponent(q)}`:'#/catalog';
+    });
+  }
+  
+  const logout=document.getElementById('logoutBtn');
+  if(logout&&!logout.dataset.bound){
+    logout.dataset.bound='1';
+    logout.addEventListener('click',async e=>{
+      e.preventDefault();
+      await Auth.logout();
+      toast('Вы вышли','success');
+      location.hash='#/';
+      router();
+    });
+  }
+
+  const filterForm=document.getElementById('filterForm');
+  if(filterForm){
+    filterForm.addEventListener('change',()=>{
+      const fd=new FormData(filterForm);
+      const p=new URLSearchParams();
+      ['cat','min','max','sort'].forEach(k=>{const v=fd.get(k);if(v)p.set(k,v)});
+      const q=new URLSearchParams(location.hash.split('?')[1]||'').get('q');
+      if(q)p.set('q',q);
+      location.hash=`#/catalog?${p.toString()}`;
+    });
+  }
+
+  const addBtn=document.getElementById('addToCartBtn');
+  if(addBtn)addBtn.addEventListener('click',()=>{
+    const id=location.hash.split('/').pop();
+    Cart.add(id,1);toast('Добавлено в корзину ✅','success');
+  });
+
+  const wishBtn=document.getElementById('wishlistBtn');
+  if(wishBtn){
+    wishBtn.onclick=()=>{
+      let list=JSON.parse(localStorage.getItem(K.WISHLIST)||'[]');
+      const id=location.hash.split('/').pop();
+      if(list.includes(id)){
+        list=list.filter(i=>i!==id);
+        toast('Удалено из избранного','info');
+      }else{
+        list.push(id);
+        toast('Добавлено в избранное ❤️','success');
+      }
+      localStorage.setItem(K.WISHLIST,JSON.stringify(list));
+      router();
+    };
+  }
+
+  const reviewForm=document.getElementById('reviewForm');
+  if(reviewForm){
+    reviewForm.onsubmit=async e=>{
+      e.preventDefault();
+      const fd=new FormData(reviewForm);
+      const user=Auth.currentUser();
+      const id=location.hash.split('/').pop();
+      try{
+        await Products.addReview(id,{
+          userName:user.displayName||'Клиент',
+          rating:Number(fd.get('rating')),
+          text:fd.get('text'),
+          date:Date.now()
+        });
+        toast('Спасибо за отзыв! ⭐','success');
+        router();
+      }catch(err){toast(err.message,'error')}
+    };
+  }
+
+  document.querySelectorAll('[data-cart-plus]').forEach(b=>{
+    b.onclick=()=>{
+      const id=b.dataset.cartPlus;
+      const item=Cart.get().find(i=>i.productId===id);
+      Cart.updateQty(id,(item?.quantity||0)+1);
+      router();
+    };
+  });
+
+  document.querySelectorAll('[data-cart-minus]').forEach(b=>{
+    b.onclick=()=>{
+      const id=b.dataset.cartMinus;
+      const item=Cart.get().find(i=>i.productId===id);
+      Cart.updateQty(id,(item?.quantity||1)-1);
+      router();
+    };
+  });
+
+  document.querySelectorAll('[data-cart-remove]').forEach(b=>{
+    b.onclick=()=>{
+      Cart.remove(b.dataset.cartRemove);
+      toast('Удалено','info');
+      router();
+    };
+  });
+
+  const regEmailInput=document.getElementById('regEmailInput');
+  if(regEmailInput){
+    let timer=null;
+    regEmailInput.addEventListener('input',()=>{
+      clearTimeout(timer);
+      const resultBox=document.getElementById('emailCheckResult');
+      const email=regEmailInput.value.trim();
+      if(!email){resultBox.innerHTML='';return}
+      if(!isValidEmailFormat(email)){
+        resultBox.innerHTML='<div class="err">❌ Неверный формат email</div>';
+        return;
+      }
+      resultBox.innerHTML='<div class="hint">⏳ Проверяем домен...</div>';
+      timer=setTimeout(async()=>{
+        const exists=await domainExists(email);
+        if(exists===false)resultBox.innerHTML='<div class="err">❌ Такого домена не существует</div>';
+        else if(exists===true)resultBox.innerHTML='<div class="ok">✅ Домен существует</div>';
+        else resultBox.innerHTML='<div class="hint">⚠️ Не удалось проверить</div>';
+      },600);
+    });
+  }
+
+  const loginForm=document.getElementById('loginForm');
+  if(loginForm)loginForm.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const fd=new FormData(loginForm);
+    try{
+      await Auth.login(fd.get('email'),fd.get('password'));
+      toast('Добро пожаловать 👋','success');
+      location.hash='#/';
+      router();
+    }catch(err){toast(err.message,'error')}
+  });
+
+  const regForm=document.getElementById('registerForm');
+  if(regForm)regForm.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const fd=new FormData(regForm);
+    const btn=document.getElementById('regSubmitBtn');
+    btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Проверяем...';
+    try{
+      await Auth.register(fd.get('email'),fd.get('password'),fd.get('name'));
+      toast('Аккаунт создан 🎉','success');
+      location.hash='#/';
+      router();
+    }catch(err){
+      toast(err.message,'error');
+      btn.disabled=false;btn.textContent='Создать аккаунт';
+    }
+  });
+
+  const checkoutForm=document.getElementById('checkoutForm');
+  if(checkoutForm)checkoutForm.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const fd=new FormData(checkoutForm);
+    const btn=document.getElementById('checkoutSubmitBtn');
+    btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Оформляем...';
+    try{
+      const order=await Orders.create({address:fd.get('address'),phone:fd.get('phone'),comment:fd.get('comment')});
+      const lines=order.items.map(i=>`• ${i.title} × ${i.quantity} = ${(i.price*i.quantity).toFixed(2)} ₴`).join('\n');
+      const bodyText=`Новый заказ #${order.id.slice(-6)}\n\nПокупатель:\nИмя: ${order.userName}\nEmail: ${order.userEmail}\n\nДоставка:\nАдрес: ${order.address}\nТелефон: ${order.phone}\n\nКомментарий: ${order.comment||'—'}\n\nТовары:\n${lines}\n\nИТОГО: ${order.total.toFixed(2)} ₴\n\nДата: ${new Date(order.createdAt).toLocaleString('ru-RU')}`;
+      const mailtoLink=`mailto:${SHOP_EMAIL}?subject=${encodeURIComponent(`🟣 Новый заказ #${order.id.slice(-6)} от ${order.userName}`)}&body=${encodeURIComponent(bodyText)}`;
+      
+      document.getElementById('app').innerHTML=`<div class="empty" style="background:var(--card);border-radius:20px;padding:40px 20px;box-shadow:var(--shadow);max-width:500px;margin:40px auto;">
+        <div class="empty-icon">🎉</div>
+        <h2 style="color:var(--primary);margin-bottom:12px;">Заказ оформлен!</h2>
+        <p>Номер: <strong>#${order.id.slice(-6)}</strong></p>
+        <p style="margin-top:12px;margin-bottom:24px;">Натисніть кнопку нижче, щоб надіслати лист. Відкриється ваш поштовий додаток.</p>
+        <a href="${mailtoLink}" class="btn" style="display:block;margin-bottom:12px;font-size:16px;">📧 Надіслати замовлення</a>
+        <a href="#/orders" class="btn btn-outline" style="display:block;">Мої замовлення</a>
+      </div>`;
+      toast('Заказ успешно создан!','success');
+    }catch(err){
+      toast(err.message,'error');
+      btn.disabled=false;btn.textContent='Подтвердить заказ';
+    }
+  });
+
+  const openAdmin=document.getElementById('openAdminModal');
+  if(openAdmin)openAdmin.onclick=showAdminModal;
+
+  const addProd=document.getElementById('addProductBtn');
+  if(addProd)addProd.onclick=()=>showProductModal();
+
+  document.querySelectorAll('[data-edit-product]').forEach(b=>{
+    b.onclick=()=>showProductModal(b.dataset.editProduct);
+  });
+
+  document.querySelectorAll('[data-del-product]').forEach(b=>{
+    b.onclick=async()=>{
+      if(confirm('Удалить товар?')){
+        await Products.remove(b.dataset.delProduct);
+        toast('Удалён','info');
+        router();
+      }
+    };
+  });
+
+  document.querySelectorAll('[data-order-status]').forEach(sel=>{
+    sel.onchange=async()=>{
+      try{
+        await Orders.setStatus(sel.dataset.orderStatus,sel.value);
+        toast('Статус обновлён ✅','success');
+        router();
+      }catch(e){toast(e.message,'error')}
+    };
+  });
+}
+
+function showAdminModal(){
+  const backdrop=document.createElement('div');
+  backdrop.className='modal-backdrop';
+  backdrop.innerHTML=`<div class="modal"><h3>🔑 Введите секретный код</h3><p>Получите доступ к админ-панели.</p><input type="password" id="adminCodeInput" placeholder="Секретный код" style="width:100%;padding:12px;border:2px solid #e5e7eb;border-radius:10px"/><div class="modal-actions"><button class="btn btn-outline" id="cancelAdminModal">Отмена</button><button class="btn" id="confirmAdminModal">Подтвердить</button></div></div>`;
+  document.body.appendChild(backdrop);
+  document.getElementById('cancelAdminModal').onclick=()=>backdrop.remove();
+  document.getElementById('confirmAdminModal').onclick=async()=>{
+    const code=document.getElementById('adminCodeInput').value;
+    try{
+      await Auth.becomeAdmin(code);
+      toast('Вы админ 👑','success');
+      backdrop.remove();
+      router();
+    }catch(e){toast(e.message,'error')}
+  };
+}
+
+function showProductModal(id){
+  const isEdit=!!id;
+  Products.byId(id).then(p => {
+    if(!p) p = {title:'',description:'',price:0,imageUrl:'',category:'',stock:0,rating:4,images:[]};
+    const backdrop=document.createElement('div');
+    backdrop.className='modal-backdrop';
+    backdrop.innerHTML=`<div class="modal">
+      <h3>${isEdit?'✏️ Редактировать':'➕ Новый'} товар</h3>
+      <form id="productForm" style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+        <label style="font-size:13px;font-weight:600">Название</label>
+        <input name="title" required value="${p.title}" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px"/>
+        <label style="font-size:13px;font-weight:600">Описание</label>
+        <textarea name="description" required rows="3" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px">${p.description}</textarea>
+        <label style="font-size:13px;font-weight:600">Цена (₴)</label>
+        <input name="price" type="number" step="0.01" required value="${p.price}" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px"/>
+        <label style="font-size:13px;font-weight:600">Фото товара (ссылки через запятую)</label>
+        <textarea name="imageUrls" required rows="3" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px" placeholder="https://img1.jpg, https://img2.jpg">${p.images ? p.images.join(', ') : p.imageUrl}</textarea>
+        <label style="font-size:13px;font-weight:600">Категория</label>
+        <input name="category" required value="${p.category}" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px"/>
+        <label style="font-size:13px;font-weight:600">Кол-во на складе</label>
+        <input name="stock" type="number" required value="${p.stock}" style="padding:10px;border:2px solid #e5e7eb;border-radius:10px"/>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="cancelProductModal">Отмена</button>
+          <button type="submit" class="btn">${isEdit?'Сохранить':'Создать'}</button>
+        </div>
+      </form>
+    </div>`;
+    document.body.appendChild(backdrop);
+    document.getElementById('cancelProductModal').onclick=()=>backdrop.remove();
+    document.getElementById('productForm').onsubmit=async e=>{
+      e.preventDefault();
+      const fd=new FormData(e.target);
+      const imageUrlsRaw = fd.get('imageUrls').split(',').map(s => s.trim()).filter(Boolean);
+      if(!imageUrlsRaw.length){toast('Добавьте хотя бы одну ссылку на фото','error');return}
+      const data={title:fd.get('title'),description:fd.get('description'),price:Number(fd.get('price')),images:imageUrlsRaw,imageUrl:imageUrlsRaw[0],category:fd.get('category'),stock:Number(fd.get('stock')),rating:p.rating||4};
+      try{
+        if(isEdit)await Products.update(id,data);
+        else await Products.create(data);
+        toast(isEdit?'Товар обновлён ✅':'Товар создан ✅','success');
+        backdrop.remove();
+        router();
+      }catch(err){toast(err.message,'error')}
+    };
+  });
+}
+
+window.addEventListener('hashchange',router);
+window.addEventListener('DOMContentLoaded', async ()=>{
+  await seedDatabase();
+  if(!location.hash)location.hash='#/';
+  router();
+});
+</script>
+</body>
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
